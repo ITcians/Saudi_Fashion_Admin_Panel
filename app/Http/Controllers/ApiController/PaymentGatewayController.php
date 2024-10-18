@@ -24,47 +24,7 @@ class PaymentGatewayController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    // public function store(Request $request)
-    // {
-    //     $input = $request->all();
-
-    //     $productId = $request->product_id;
-    //     $User = Auth::user();
-
-    //     $default_currency = SettingModel::where('key', 'default_currency')->first();
-
-    //     // $data['amount'] = floatval($input['amount']);
-    //     $data['amount'] = 300;
-    //     $data['currency'] = $default_currency->value;
-    //     $data['customer']['first_name'] = $User->first_name;
-    //     $data['customer']['email'] = $User->email;
-    //     $data['customer']['phone']['country_code'] = $User->country_code;
-    //     $data['customer']['phone']['number'] = $User->phone;
-    //     $data['source']['id'] = 'src_card';
-
-    //     $productIds = [1,2,3,4]; // Assuming this is an array // testing
-    //     $productIdList = implode(',', $productIds); // Convert array to a comma-separated string
-    //     // Generate 4-digit numeric OTP
-    //     $invoiceID = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-
-    //     $data['redirect']['url'] = "http://192.168.100.8:8000/api/callback/$invoiceID";
-
-        
-
-    //     $response = Curl::to('https://api.tap.company/v2/charges')
-    //                 ->withBearer('sk_test_iaX0qZtJegkbK1LzOYoHlSmj')
-    //                 ->withData($data)
-    //                 ->asJson()
-    //                 ->post();
-
-    //                 return response()->json([
-    //                     'payment_gateway_url' => $response->transaction->url,
-    //                 ]);
-                    
-    //     // dd($response);
-    // }
-
-  
+   
     public function callback(Request $request,string $invoiceID)
     {
         // return response()->json($invoiceID);
