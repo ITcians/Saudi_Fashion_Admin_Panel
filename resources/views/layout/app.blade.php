@@ -373,57 +373,57 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/dashboard">
+                            <a class="nav-link menu-link" href="{{ url('/admin/dashboard') }}">
                                 <i class="ri-dashboard-2-line"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/user/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/user/index') }}">
                                 <i class="ri-user-line"></i> User Management
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/event/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/event/index') }}">
                                 <i class="ri-calendar-line"></i> Events
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/post/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/post/index') }}">
                                 <i class="ri-file-text-line"></i> Posts
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/category/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/category/index') }}">
                                 <i class="ri-folder-line"></i> Categories
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/subcategory/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/subcategory/index') }}">
                                 <i class="ri-folder-line"></i> SubCategorys
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/product/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/product/index') }}">
                                 <i class="ri-product-hunt-line"></i> Products
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/color/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/color/index') }}">
                                 <i class="ri-palette-line"></i> Colors
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/promocode/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/promocode/index') }}">
                                 <i class="ri-palette-line"></i> Promo Code
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/eventattendence/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/eventattendence/index') }}">
                                 <i class="ri-user-star-line"></i> Event Attendence
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/productsize/index">
+                            <a class="nav-link menu-link" href="{{ url('/admin/productsize/index') }}">
                                 <i class="ri-layout-line"></i> Product Size
                             </a>
                         </li>
@@ -440,10 +440,10 @@
                             <div class="collapse menu-dropdown" id="sidebarSettings">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="/admin/settings" class="nav-link" data-key="t-setting"> Setting </a>
+                                        <a href="{{ url('/admin/settings') }}" class="nav-link" data-key="t-setting"> Setting </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/admin/paymentgateway/index" class="nav-link" data-key="t-paymentgateway"> Payment Gateway </a>
+                                        <a href="{{ url('/admin/paymentgateway/index') }}" class="nav-link" data-key="t-paymentgateway"> Payment Gateway </a>
                                     </li>
 
 
