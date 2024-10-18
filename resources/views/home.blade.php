@@ -17,9 +17,9 @@
                     </div>
                     <div class="d-flex align-items-end justify-content-between mt-4">
                         <div>
-                            <h4 class="fs-22 fw-semibold ff-secondary mb-4">PKR<span class="counter-value"
-                                    data-target="0">0</span> </h4>
-                            <a href="#" class="text-decoration-underline">View all users</a>
+                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
+                                    data-target="{{ App\Models\User::count() }}">0</span> </h4>
+                            <a href="{{ url('/admin/user/index') }}" class="text-decoration-underline">View all users</a>
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-soft-success rounded fs-3">
@@ -78,8 +78,8 @@
                     <div class="d-flex align-items-end justify-content-between mt-4">
                         <div>
                             <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                    data-target="{{ App\Models\User::count() }}">0</span> </h4>
-                            <a href="/admin/user/index" class="text-decoration-underline">See details</a>
+                                    data-target="">0</span> </h4>
+                            <a href="#" class="text-decoration-underline">See details</a>
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-soft-warning rounded fs-3">
