@@ -1,0 +1,28 @@
+
+/*# sourceMappingURL=custom.min.css.map */
+.sm_image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* To make the image circular */
+    object-fit: cover; /* To maintain aspect ratio and cover the whole area */
+}
+
+.sq_image {
+    width: 300px;
+    height: 300px;
+    object-fit: cover; /* To maintain aspect ratio and cover the whole area */
+}
+
+/* CSS code */
+.image-container {
+    width: 100px; /* width of the square */
+    height: 100px; /* height of the square */
+    overflow: hidden; /* to hide any part of the image that goes beyond the square */
+    border-radius: 5px; /* to make the corners of the square rounded, adjust as needed */
+}
+
+.image-container img {
+    width: 100%; /* make the image fill the square container */
+    height: auto; /* maintain the aspect ratio of the image */
+    object-fit: cover; /* cover the entire area of the square with the image */
+}
