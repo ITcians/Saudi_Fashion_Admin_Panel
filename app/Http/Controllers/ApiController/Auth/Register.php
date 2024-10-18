@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use stdClass;
 use Carbon\Carbon;
-
+use Followable;
 
 
 class Register extends Controller
@@ -332,18 +332,43 @@ class Register extends Controller
     public function topDesigner(Request $request)
     {
         $username = $request->input('username');
-    
+        
         $query = User::where('account_type', 1);
-    
-        // Check if a username is provided
+        
         if ($username) {
             $query->where('username', 'like', '%' . $username . '%'); // Use 'like' for partial matching
         }
     
         $designers = $query->latest()->get();
     
-        return response()->json($designers);
+        $authUser = Auth::user();
+    
+        $designersWithFollowFlag = $designers->map(function ($designer) use ($authUser) {
+            return [
+                'id' => $designer->id,
+                'fullname' => $designer->fullname,
+                'email' => $designer->email,
+                'country_code' => $designer->country_code,
+                'phone' => $designer->phone,
+                'image' => $designer->image,
+                'username' => $designer->username,
+                'subscribed_to_newsletters' => $designer->subscribed_to_newsletters,
+                'terms_and_condition_agreement' => $designer->terms_and_condition_agreement,
+                'fcm_token' => $designer->fcm_token,
+                'account_status' => $designer->account_status,
+                'bio' => $designer->bio,
+                'email_verified_at' => $designer->email_verified_at,
+                'created_at' => $designer->created_at,
+                'updated_at' => $designer->updated_at,
+                'account_type' => $designer->account_type,
+                'mIFollowing' => $authUser->mIFollowing($designer->id), // Call the method on the authenticated user instance
+            ];
+        });
+    
+        return response()->json($designersWithFollowFlag);
     }
+    
+    
     
     
 

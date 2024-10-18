@@ -7,12 +7,14 @@ use App\Models\AddToCart;
 use App\Models\CustomerAddressModel;
 use App\Models\OrderModel;
 use App\Models\ProductModel;
+use App\Models\SettingModel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Finally_;
 use Validator;
 use stdClass;
+use Ixudra\Curl\Facades\Curl;
 class ProductOrderController extends Controller
 {
     protected $res;
@@ -49,20 +51,49 @@ class ProductOrderController extends Controller
                 'address_id' => 'required',
             ]);
             
-            $customerId = Auth::id();
+            // Generate 4-digit numeric OTP
+            $invoiceID = str_pad(random_int(0, 999999), 5, '0', STR_PAD_LEFT);
+
+            $User = Auth::user();
 
             foreach ($request->product_id as $ProductId) {
                 OrderModel::create([
                     'product_id' => $ProductId,
-                    'customer_id' => $customerId,
+                    'customer_id' => $User->id,
                     'address_id' => $request->address_id,
+                    'invoice_id' => $invoiceID,
                 ]);
             }
 
-            return response()->json(['message' => 'Orders have been created successfully']);
-
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+            $default_currency = SettingModel::where('key', 'default_currency')->first();
+    
+            // $data['amount'] = floatval($input['amount']);
+            $data['amount'] = 300;
+            $data['currency'] = $default_currency->value;
+            $data['customer']['first_name'] = $User->first_name;
+            $data['customer']['email'] = $User->email;
+            $data['customer']['phone']['country_code'] = $User->country_code;
+            $data['customer']['phone']['number'] = $User->phone;
+            $data['source']['id'] = 'src_card';
+    
+    
+            $data['redirect']['url'] = "http://192.168.100.8:8000/api/callback/$invoiceID";
+    
+            
+    
+            $response = Curl::to('https://api.tap.company/v2/charges')
+                        ->withBearer('sk_test_iaX0qZtJegkbK1LzOYoHlSmj')
+                        ->withData($data)
+                        ->asJson()
+                        ->post();
+    
+            return response()->json([
+                'message' => 'Orders have been created successfully',
+                'payment_gateway_url' => $response->transaction->url,
+            ]);
+                        
+        } catch (Exception $ex) {
+            return response()->json(['error' => $ex->getMessage()], 500);
         }
     }
 

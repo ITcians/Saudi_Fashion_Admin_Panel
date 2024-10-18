@@ -1,4 +1,5 @@
 
+
 <!doctype html>
 <html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
 
@@ -29,29 +30,29 @@
 
 <body>
 
-<div class="container mt-2">
+<div class="container mt-2 ">
     
-    <div class="row justify-content-center">
-        <div class="col-xxl-9">
+    <div class="row justify-content-center ">
+        <div class="col-xxl-6">
             <div class="card" id="demo">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card-header border-bottom-dashed p-4">
                             <div class="d-flex">
                                 <div class="flex-grow-1">
-                                    <img src="images/logo.png" class="card-logo card-logo-dark" alt="logo dark" height="60">
-                                    <img src="images/logo.png" class="card-logo card-logo-light" alt="logo light" height="60">
+                                    <img src="/images/logo.png" class="card-logo card-logo-dark" alt="logo dark" height="60">
+                                    <img src="/images/logo.png" class="card-logo card-logo-light" alt="logo light" height="60">
                                     <div class="mt-sm-5 mt-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold">Address</h6>
-                                        <p class="text-muted mb-1" id="address-details">California, United States</p>
-                                        <p class="text-muted mb-0" id="zip-code"><span>Zip-code:</span> 90201</p>
+                                        <h6 class="text-muted text-uppercase fw-semibold">Contact Details</h6>
+                                        <p class="text-muted mb-1" id="address-details"><span>Name:</span>{{$response->customer->first_name}}</p>
+                                        <p class="text-muted mb-1" id="address-details"><span>Email:</span>{{$response->customer->email}}</p>
+                                        <p class="text-muted mb-0" id="zip-code"><span>Cell No:</span>{{$response->customer->phone->country_code}} {{$response->customer->phone->number}}</p>
                                     </div>
                                 </div>
-                                <div class="flex-shrink-0 mt-sm-0 mt-3">
-                                    <h6><span class="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6>
+                                {{-- <div class="flex-shrink-0 mt-sm-0 mt-3">
                                     <h6><span class="text-muted fw-normal">Email:</span><span id="email">test@maventics.com</span></h6>
-                                    <h6><span class="text-muted fw-normal">Website:</span> <a href="https://themesbrand.com/" class="link-primary" target="_blank" id="website">www.themesbrand.com</a></h6>
-                                </div>
+                                    <h6><span class="text-muted fw-normal">Website:</span> <a href="https://themesbrand.com/" class="link-primary" target="_blank" id="website">www.saudifashion.com</a></h6>
+                                </div> --}}
                             </div>
                         </div>
                         <!--end card-header-->
@@ -61,22 +62,35 @@
                             <div class="row g-3">
                                 <div class="col-lg-3 col-6">
                                     <p class="text-muted mb-2 text-uppercase fw-semibold">Invoice No</p>
-                                    <h5 class="fs-14 mb-0">#VL<span id="invoice-no">25000355</span></h5>
+                                    <h5 class="fs-14 mb-0">#<span id="invoice-no">
+                                    @php
+                                        $url = $response->redirect->url; // The full URL
+                                        $id = basename($url); // Get the last part of the URL
+                                    @endphp
+                                    {{$id}}
+                                    </span></h5>
                                 </div>
                                 <!--end col-->
                                 <div class="col-lg-3 col-6">
                                     <p class="text-muted mb-2 text-uppercase fw-semibold">Date</p>
-                                    <h5 class="fs-14 mb-0"><span id="invoice-date">23 Nov, 2021</span> <small class="text-muted" id="invoice-time">02:36PM</small></h5>
+                                    <h5 class="fs-14 mb-0"><span id="invoice-date">
+                                       </span>  <small class="text-muted" id="invoice-time"> 
+                                        <?php 
+                                            use Carbon\Carbon;
+                                            $currentDateTime = Carbon::now()->format('Y-m-d H:i:s');
+                                            echo $currentDateTime; // Output the current date and time
+                                        ?>
+                                    </small></h5>
                                 </div>
                                 <!--end col-->
                                 <div class="col-lg-3 col-6">
                                     <p class="text-muted mb-2 text-uppercase fw-semibold">Payment Status</p>
-                                    <span class="badge bg-success-subtle text-success fs-11" id="payment-status">Paid</span>
+                                    <span class="badge bg-success-subtle text-success fs-11" id="payment-status">{{$response->status}}</span>
                                 </div>
                                 <!--end col-->
                                 <div class="col-lg-3 col-6">
                                     <p class="text-muted mb-2 text-uppercase fw-semibold">Total Amount</p>
-                                    <h5 class="fs-14 mb-0">$<span id="total-amount">755.96</span></h5>
+                                    <h5 class="fs-14 mb-0">{{$response->amount}} <span id="total-amount">{{$response->currency}}</span></h5>
                                 </div>
                                 <!--end col-->
                             </div>
@@ -90,7 +104,7 @@
                             <div class="border-top border-top-dashed mt-2">
                                 <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
                                     <tbody>
-                                        <tr>
+                                        {{-- <tr>
                                             <td>Sub Total</td>
                                             <td class="text-end">$699.96</td>
                                         </tr>
@@ -105,10 +119,10 @@
                                         <tr>
                                             <td>Shipping Charge</td>
                                             <td class="text-end">$65.00</td>
-                                        </tr>
+                                        </tr> --}}
                                         <tr class="border-top border-top-dashed fs-15">
-                                            <th scope="row">Total Amount</th>
-                                            <th class="text-end">$755.96</th>
+                                            <th scope="row">Total Amount : </th>
+                                            <th class="text-end">{{$response->amount}} {{$response->currency}}</th>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -116,10 +130,9 @@
                             </div>
                             <div class="mt-3">
                                 <h6 class="text-muted text-uppercase fw-semibold mb-3">Payment Details:</h6>
-                                <p class="text-muted mb-1">Payment Method: <span class="fw-medium" id="payment-method">Mastercard</span></p>
-                                <p class="text-muted mb-1">Card Holder: <span class="fw-medium" id="card-holder-name">David Nichols</span></p>
-                                <p class="text-muted mb-1">Card Number: <span class="fw-medium" id="card-number">xxx xxxx xxxx 1234</span></p>
-                                <p class="text-muted">Total Amount: <span class="fw-medium" id="">$ </span><span id="card-total-amount">755.96</span></p>
+                                <p class="text-muted mb-1">Payment Method: <span class="fw-medium" id="payment-method">{{$response->card->scheme}}</span></p>
+                                <p class="text-muted mb-1">Card Number: <span class="fw-medium" id="card-number">xxx xxxx xxxx {{$response->card->last_four}}</span></p>
+                                <p class="text-muted">Total Amount: <span class="fw-medium" id="">{{$response->amount}} </span><span id="card-total-amount">{{$response->currency}}</span></p>
                             </div>
                             <div class="mt-4">
                                 <div class="alert alert-info">
@@ -133,8 +146,8 @@
                                 </div>
                             </div>
                             <div class="hstack gap-2 justify-content-end d-print-none mt-4">
-                                <a href="javascript:window.print()" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Print</a>
-                                <a href="javascript:void(0);" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                                {{-- <a href="javascript:window.print()" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Print</a> --}}
+                                <a href="javascript:void(0);" class="btn btn-success"><i class="ri-download-2-line align-bottom me-1"></i> Back to the App</a>
                             </div>
                         </div>
                         <!--end card-body-->

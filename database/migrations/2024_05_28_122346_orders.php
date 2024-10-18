@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('customer_id'); // in this column data comes from users table
             $table->integer('address_id');
+            $table->bigInteger('invoice_id');
             $table->string('status')->default(403); // when desginer accept the irder
             $table->timestamps();
         });

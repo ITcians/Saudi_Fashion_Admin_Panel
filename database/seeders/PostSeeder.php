@@ -15,7 +15,7 @@ class PostSeeder extends Seeder
     {
         PostModel::create([
             'post' => "AI Post",
-            'cover' => "1714834683.jpeg",
+            'cover' => "/upload_images/1729076611.jpg",
             'allow_comments' => 1,
             'visibiliy' => 1,
             'is_drafted' => 1,

@@ -151,7 +151,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
 });
 
-Route::get('/callback/{productids}', [PaymentGatewayController::class, 'callBack']);
+Route::get('/callback/{invoiceId}', [PaymentGatewayController::class, 'callBack']);
 
 
 Route::get('/settings', function () {

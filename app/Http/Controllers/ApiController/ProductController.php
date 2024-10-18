@@ -529,7 +529,7 @@ public function updateProductPriceAndCategory(Request $request, string $id)
             'sub_category',
             'sizes',
             'colors',
-        ])->get();
+        ])->latest()->paginate(15);
         return response()->json($product);
     }
 

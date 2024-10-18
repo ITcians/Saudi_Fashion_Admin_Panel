@@ -13,6 +13,7 @@ class OrderModel extends Model
         'product_id',
         'customer_id' ,
         'address_id',
+        'invoice_id',
         'status',
     ];
 }
