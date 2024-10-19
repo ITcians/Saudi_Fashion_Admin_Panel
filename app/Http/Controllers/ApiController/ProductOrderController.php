@@ -50,9 +50,8 @@ class ProductOrderController extends Controller
      */
     public function orderCount()
     {
-        $orderCount = OrderModel::where('customer_id',Auth::id())->count();
+        $orderCount = OrderModel::where('customer_id',Auth::id())->groupBy('product_id')->count();
         return response()->json(['order_count'=>$orderCount]);
-
     }
 
     /**
