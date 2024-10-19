@@ -147,8 +147,11 @@ Route::group(['middleware' => ['auth:admin']], function () {
 
 });
 
+Route::get('/payment-declined' , function () {
+    return view('paymentdeclained');
+});
 
-    // Invoice
-    Route::get('/invoice',function () {
-        return view('invoice');
-    });
+// Invoice
+Route::get('/invoice',function () {
+    return view('invoice');
+});

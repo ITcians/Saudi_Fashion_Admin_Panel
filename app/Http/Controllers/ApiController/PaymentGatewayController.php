@@ -45,6 +45,8 @@ class PaymentGatewayController extends Controller
             OrderModel::where('invoice_id',$invoiceID)->update([
                 'status' => 200
             ]);
+       } else {
+        return view('paymentdeclained',compact('response'));
        }
 
         // return response()->json($order);
