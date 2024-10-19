@@ -142,7 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     # Payment Gateway
     Route::get('/get-payment-gateway',[PaymentGatewayController::class,'index']);
-    Route::post('/payment-store',[PaymentGatewayController::class,'store']);
+    // Route::post('/payment-store',[PaymentGatewayController::class,'store']);
 
     # Get Top Desginer
     Route::get('/get-top-desginer',[Register::class,'topDesigner']);
