@@ -16,4 +16,9 @@ class OrderModel extends Model
         'invoice_id',
         'status',
     ];
+
+    public function product() 
+    {
+        return $this->belongsTo(ProductModel::class,'product_id');
+    }
 }

@@ -26,17 +26,33 @@ class ProductOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getOrder(Request $request)
     {
-        //
+        $searchTerm = $request->input('search');
+    
+        $query = OrderModel::where('customer_id', Auth::id())
+            ->with('product');
+    
+        if ($searchTerm) {
+            $query->whereHas('product', function ($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+    
+        $orders = $query->paginate(10);
+    
+        return response()->json($orders);
     }
+    
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function orderCount()
     {
-        //
+        $orderCount = OrderModel::where('customer_id',Auth::id())->count();
+        return response()->json(['order_count'=>$orderCount]);
+
     }
 
     /**

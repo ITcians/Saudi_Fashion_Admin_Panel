@@ -124,6 +124,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::Post('/place_order', [ProductOrderController::class, 'store']);
     Route::delete('/product-delete/{id}',[ProductOrderController::class,'destroy']);
     Route::get('/order-details/{id}',[ProductOrderController::class,'orderDetails']);
+    Route::get('/get-order',[ProductOrderController::class,'getOrder']);
+    Route::get('/order-count',[ProductOrderController::class,'orderCount']);
 
 
     # Offer Promotion Routes
@@ -146,7 +148,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     # Get Top Desginer
     Route::get('/get-top-desginer',[Register::class,'topDesigner']);
-
 
     
 });
