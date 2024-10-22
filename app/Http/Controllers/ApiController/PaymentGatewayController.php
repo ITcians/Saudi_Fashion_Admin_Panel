@@ -38,6 +38,7 @@ class PaymentGatewayController extends Controller
             $TapModel->name = $response->customer->first_name;
             $TapModel->email = $response->customer->email;
             $TapModel->tran_id = $response->id;
+            $TapModel->payment_method = $response->payment_method;
             $TapModel->amount = $response->amount;
             $TapModel->save();
             

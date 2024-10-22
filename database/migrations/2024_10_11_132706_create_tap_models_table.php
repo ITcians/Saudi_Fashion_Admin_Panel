@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->longText('tran_id');
+            $table->longText('payment_method');
             $table->decimal('amount',8,2);
             $table->timestamps();
         });

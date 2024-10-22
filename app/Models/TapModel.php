@@ -15,6 +15,7 @@ class TapModel extends Model
         'name',
         'email',
         'tran_id',
+        'payment_method',
         'amount',
     ];
 }
