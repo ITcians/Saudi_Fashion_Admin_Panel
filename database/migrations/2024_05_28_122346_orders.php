@@ -16,8 +16,11 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('customer_id'); // in this column data comes from users table
             $table->integer('address_id');
+            $table->integer('color_id');
+            $table->integer('size_id');
+            $table->bigInteger('quantity');
             $table->bigInteger('invoice_id');
-            $table->string('status')->default(403); // when desginer accept the irder
+            $table->string('status')->default(403); // when desginer accept the order the status will be 200
             $table->timestamps();
         });
     }

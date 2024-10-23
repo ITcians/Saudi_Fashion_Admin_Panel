@@ -61,44 +61,59 @@ class ProductOrderController extends Controller
     {
         try {
             $data = $this->validate($request, [
-                // 'cart_data' => 'required|array',
-                'product_id' => 'required|array',
-                'address_id' => 'required',
+                'cart_data' => 'required|array',
+                'cart_data.*.product_id' => 'required|integer',
+                'cart_data.*.address_id' => 'required|integer',
+                'cart_data.*.size_id' => 'required|integer',
+                'cart_data.*.color_id' => 'required|integer',
+                'cart_data.*.quantity' => 'required|integer|min:1',
             ]);
-            
-            // Generate 4-digit numeric OTP
-            $invoiceID = str_pad(random_int(0, 999999), 5, '0', STR_PAD_LEFT);
-
-            $User = Auth::user();
-
-            foreach ($request->product_id as $ProductId) {
+    
+            // Generate a 5-digit invoice ID
+            $invoiceID = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+    
+            $user = Auth::user();
+            $totalAmount = 0;
+    
+            foreach ($data['cart_data'] as $item) {
                 OrderModel::create([
-                    'product_id' => $ProductId,
-                    'customer_id' => $User->id,
-                    'address_id' => $request->address_id,
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $user->id,
+                    'address_id' => $item['address_id'],
+                    'color_id' => $item['color_id'],
+                    'size_id' => $item['size_id'],
+                    'quantity' => $item['quantity'],
                     'invoice_id' => $invoiceID,
                 ]);
+    
+                // Assuming you have a way to get the product price
+                $productPrice = ProductModel::find($item['product_id'])->price ?? 0;
+                $totalAmount += $productPrice * $item['quantity'];
             }
-
-            $default_currency = SettingModel::where('key', 'default_currency')->first();
     
-            // $data['amount'] = floatval($input['amount']);
-            $data['amount'] = 300;
-            $data['currency'] = $default_currency->value;
-            $data['customer']['first_name'] = $User->first_name;
-            $data['customer']['email'] = $User->email;
-            $data['customer']['phone']['country_code'] = $User->country_code;
-            $data['customer']['phone']['number'] = $User->phone;
-            $data['source']['id'] = 'src_card';
+            // Fetch the default currency setting
+            $defaultCurrency = SettingModel::where('key', 'default_currency')->first();
     
+            // Prepare payment data
+            $paymentData = [
+                'amount' => $totalAmount,
+                'currency' => $defaultCurrency->value,
+                'customer' => [
+                    'first_name' => $user->first_name,
+                    'email' => $user->email,
+                    'phone' => [
+                        'country_code' => $user->country_code,
+                        'number' => $user->phone,
+                    ],
+                ],
+                'source' => ['id' => 'src_card'],
+                'redirect' => ['url' => "http://192.168.100.8:8000/api/callback/$invoiceID"],
+            ];
     
-            $data['redirect']['url'] = "http://192.168.100.8:8000/api/callback/$invoiceID";
-    
-            
-    
+            // Make the API request to the payment gateway
             $response = Curl::to('https://api.tap.company/v2/charges')
                         ->withBearer('sk_test_iaX0qZtJegkbK1LzOYoHlSmj')
-                        ->withData($data)
+                        ->withData($paymentData)
                         ->asJson()
                         ->post();
     
@@ -106,11 +121,14 @@ class ProductOrderController extends Controller
                 'message' => 'Orders have been created successfully',
                 'payment_gateway_url' => $response->transaction->url,
             ]);
-                        
+    
+        } catch (Exception $ex) {
+            return response()->json(['error' => $ex->getMessage()], 422);
         } catch (Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 500);
         }
     }
+    
 
 
     /**

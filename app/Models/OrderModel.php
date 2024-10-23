@@ -13,6 +13,9 @@ class OrderModel extends Model
         'product_id',
         'customer_id' ,
         'address_id',
+        'color_id',
+        'size_id',
+        'quantity',
         'invoice_id',
         'status',
     ];
