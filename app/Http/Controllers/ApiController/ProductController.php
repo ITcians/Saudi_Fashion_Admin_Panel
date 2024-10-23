@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Models\ColorModel;
+use App\Models\Comment;
 use App\Models\Info;
 use App\Models\ProductMediaModel;
 use App\Models\ProductModel;
@@ -250,46 +251,6 @@ class ProductController extends Controller
         }
     }
 
-
-              // Handle media uploads
-    
-            // public function uploadBase64ImagesProduct(Request $request)
-            // {
-            //     try {
-            //         $uploadDir = public_path('upload_images/');
-            
-            //         // Create the directory if it does not exist
-            //         if (!is_dir($uploadDir)) {
-            //             mkdir($uploadDir, 0755, true);
-            //         }
-
-            //         $base64Images = $request->input('images');
-            
-            //         // var_dump($base64Images);
-            //         foreach (json_decode($base64Images) as $data) {
-            
-            //             // Determine the file extension from the type
-            //             $filename = uniqid() . '.jpg';
-            //             $path = $uploadDir . $filename;
-            
-            //             // Save the image to the server
-            //             file_put_contents($path, $data);
-            
-            //             // Save the file path in the database
-            //             ProductMediaModel::create([
-            //                 'media' => '/upload_images/' . $filename, // Relative path for database
-            //                 'type' => 'image',
-            //                 'product_id' => $request->product_id,
-            //             ]);
-            //         }
-            
-            //         return response()->json(['success' => true]);
-            //     } catch (Exception $ex) {
-            //         \Log::error('Image upload error: ' . $ex->getMessage());
-            //         return response()->json(['success' => false, 'error' => $ex->getMessage()], 500);
-            //     }
-            // }
-
             public function uploadBase64ImagesProduct(Request $request)
             {
                 try {
@@ -532,6 +493,8 @@ public function updateProductPriceAndCategory(Request $request, string $id)
         ])->latest()->paginate(15);
         return response()->json($product);
     }
+
+
 
 
 }

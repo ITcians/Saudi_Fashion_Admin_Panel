@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('flag_comments',function(Blueprint $table){
-           $table->id();
-           $table->integer('post_id')->nullable();
-           $table->integer('comment_id')->nullable();
-           $table->string('flagged_by_user_id');
-           $table->string('reason');
-           $table->timestamps();
-
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('user_id');
+            $table->bigInteger('post_id');
+            $table->string('comment');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('flag_comments');
+        Schema::dropIfExists('comments');
     }
 };

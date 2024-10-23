@@ -60,7 +60,8 @@ class FlagController extends Controller
     {
         try {
             $this->validate($request, [
-                'post_id' => 'required',
+                'post_id' => 'nullable',
+                'comment_id' => 'nullable',
                 'flagged_by_user_id' => 'required',
                 'reason' => 'required',
             ]);
@@ -68,6 +69,7 @@ class FlagController extends Controller
 
             $flag = new FlagCommmentModel();
             $flag->post_id = $request->input('post_id');
+            $flag->comment_id = $request->input('comment_id');
             $flag->flagged_by_user_id = $request->input('flagged_by_user_id');
             $flag->reason = $request->input('reason');
 

@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FlagCommmentModel extends Model
+class Comment extends Model
 {
     use HasFactory;
 
-    protected $table = 'flag_comments';
-
+    protected $table = 'comments';
     protected $fillable = [
+        'user_id',
         'post_id',
-        'comment_id',
-        'flagged_by_user_id',
-        'reason',
+        'comment',
     ];
+
+    public function User()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

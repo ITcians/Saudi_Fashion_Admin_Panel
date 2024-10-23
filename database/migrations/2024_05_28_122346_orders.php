@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('product_id');
             $table->integer('customer_id'); // in this column data comes from users table
+            $table->integer('designer_id'); // in this column data comes from users table how created a product
             $table->integer('address_id');
             $table->integer('color_id');
             $table->integer('size_id');
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('orders');
     }
 };

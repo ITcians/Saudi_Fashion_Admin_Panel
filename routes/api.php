@@ -133,8 +133,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/offer_promotion',[OfferPromotionController::class,'store']);
     Route::post('/update_offer_promotion/{id}',[OfferPromotionController::class,'update']);
 
-    # Flag Post Routes
+    # Post Routes
     Route::post('/flag_post',[FlagController::class,'postFlagged']);
+    Route::post('store-comment',[PostController::class,'storeComment']);
+    Route::get('get-comment/{postId}',[PostController::class,'getComment']);
+    Route::post('store-post-saves',[PostController::class,'storePostSaves']);
 
     # Comments Routes
     Route::post('/flag_comment',[FlagController::class,'commentFlagged']);
@@ -149,6 +152,8 @@ Route::middleware('auth:sanctum')->group(function () {
     # Get Top Desginer
     Route::get('/get-top-desginer',[Register::class,'topDesigner']);
 
+    # Get the Desginer site data
+    Route::get('get-desginer-dashboard',[UserController::class,'desginerDashboard']);
     
 });
 

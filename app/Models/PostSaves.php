@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FlagCommmentModel extends Model
+class PostSaves extends Model
 {
     use HasFactory;
 
-    protected $table = 'flag_comments';
+    protected $table = 'post_saves';
 
     protected $fillable = [
         'post_id',
-        'comment_id',
-        'flagged_by_user_id',
-        'reason',
+        'user_id',
     ];
 }

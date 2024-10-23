@@ -75,20 +75,26 @@ class ProductOrderController extends Controller
             $user = Auth::user();
             $totalAmount = 0;
     
+            // Loop through the cart data and create orders
             foreach ($data['cart_data'] as $item) {
-                OrderModel::create([
-                    'product_id' => $item['product_id'],
-                    'customer_id' => $user->id,
-                    'address_id' => $item['address_id'],
-                    'color_id' => $item['color_id'],
-                    'size_id' => $item['size_id'],
-                    'quantity' => $item['quantity'],
-                    'invoice_id' => $invoiceID,
-                ]);
+                $product = ProductModel::find($item['product_id']);
     
-                // Assuming you have a way to get the product price
-                $productPrice = ProductModel::find($item['product_id'])->price ?? 0;
-                $totalAmount += $productPrice * $item['quantity'];
+                if ($product) {
+                    OrderModel::create([
+                        'product_id' => $item['product_id'],
+                        'customer_id' => $user->id,
+                        'designer_id' => $product->created_by, // Use created_by from the product
+                        'address_id' => $item['address_id'],
+                        'color_id' => $item['color_id'],
+                        'size_id' => $item['size_id'],
+                        'quantity' => $item['quantity'],
+                        'invoice_id' => $invoiceID,
+                    ]);
+    
+                    // Assuming you have a way to get the product price
+                    $productPrice = $product->price ?? 0;
+                    $totalAmount += $productPrice * $item['quantity'];
+                }
             }
     
             // Fetch the default currency setting
@@ -124,10 +130,11 @@ class ProductOrderController extends Controller
     
         } catch (Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 422);
-        } catch (Exception $ex) {
-            return response()->json(['error' => $ex->getMessage()], 500);
+        } catch (Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+    
     
 
 

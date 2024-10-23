@@ -3,17 +3,26 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\FellowsModel;
 use App\Models\HashtagModel;
 use App\Models\PostMediaModel;
 use App\Models\PostModel;
 use App\Models\PostReaction;
+use App\Models\PostSaves;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 class PostController extends Controller
 {
+
+    protected $res;
+    function __construct() 
+    {
+        $this->res = new stdClass();
+    }
 
 
     function reaction_count($id){
@@ -399,6 +408,54 @@ class PostController extends Controller
     {
         return PostModel::where('created_by',$id)->select("*")
         ->paginate(10);
+    }
+
+    public function storeComment(Request $request){
+        try {
+            $this->validate($request,[
+                'comment' => 'required',
+                'post_id' => 'required',
+            ]);
+
+            Comment::create([
+                'user_id' => Auth::id(),
+                'post_id' => $request->post_id,
+                'comment' => $request->comment,
+            ]);
+
+            $this->res->message = 'Comment added Successfully!';
+        
+        } catch (Exception $ex) {
+            $this->res->error = $ex->getMessage();
+        } finally { 
+            return $this->res;
+        }
+    }
+
+    public function getComment(string $postId)
+    {
+        $comment = Comment::where('post_id',$postId)->with('User')->latest()->paginate(10);
+        return response()->json($comment);
+    }
+
+    public function storePostSaves(Request $request)
+    {
+        try {
+            $this->validate($request,[
+                'post_id' => 'required',
+            ]);
+
+            PostSaves::create([
+                'post_id' => $request->post_id,
+                'user_id'=>Auth::id(),
+            ]);
+
+            $this->res->message = 'Post Saves Successfully!';
+        } catch (   Exception $ex) {
+            $this->res->error = $ex->getMessage();
+        } finally {
+            return $this->res;
+        }
     }
 
 }

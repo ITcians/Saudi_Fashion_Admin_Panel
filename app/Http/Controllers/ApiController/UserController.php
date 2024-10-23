@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Models\FellowsModel;
+use App\Models\OrderModel;
 use App\Models\UserModels\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -244,8 +245,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // public function desginerDashboard()
+    // {
+    //     $order = OrderModel::;
+    // }
 }
