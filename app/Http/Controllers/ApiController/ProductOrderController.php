@@ -130,7 +130,7 @@ class ProductOrderController extends Controller
     
         } catch (Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 422);
-        } catch (Throwable $th) {
+        } catch (Exception $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
