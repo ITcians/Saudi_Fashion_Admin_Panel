@@ -245,8 +245,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    // public function desginerDashboard()
-    // {
-    //     $order = OrderModel::;
-    // }
+    public function desginerDashboard()
+    {
+        // $order = OrderModel::;
+    }
 }
