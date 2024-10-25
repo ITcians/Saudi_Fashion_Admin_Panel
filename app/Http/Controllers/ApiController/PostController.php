@@ -59,19 +59,34 @@ class PostController extends Controller
         ->paginate(10);
     }
 
-    public function getFollowingPost()
+    public function getFollowingPost(Request $request)
     {
+        // Get the search term from the request, default to an empty string if not provided
+        $searchTerm = $request->input('search', '');
+    
         $followerDetails = FellowsModel::where('follower_user_id', Auth::id())
-             ->get()
-             ->pluck('following_user_id');
-        
-        $posts = PostModel::whereIn('created_by', $followerDetails)
-            ->with(['createdBy'])
+            ->get()
+            ->pluck('following_user_id');
+    
+        // Build the query to fetch posts
+        $query = PostModel::whereIn('created_by', $followerDetails);
+    
+        // If a search term is provided, apply the search filter
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('post', 'like', '%' . $searchTerm . '%') // Adjust field name as necessary
+                  ->orWhere('content', 'like', '%' . $searchTerm . '%'); // Adjust field name as necessary
+            });
+        }
+    
+        // Fetch the posts with the search applied
+        $posts = $query->with(['createdBy'])
             ->latest()
             ->paginate(10);
-        
+    
         return response()->json($posts);
     }
+    
     
     public function TrendingPost(Request $request) {
         $posts = PostReaction::select('post_id')
@@ -456,6 +471,13 @@ class PostController extends Controller
         } finally {
             return $this->res;
         }
+    }
+
+    public function getPostSaves()
+    {
+        $post = PostSaves::where('user_id',Auth::id())->with('post','user')->latest()->paginate(10);
+
+        return response()->json($post);
     }
 
 }

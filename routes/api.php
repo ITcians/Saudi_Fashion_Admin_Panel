@@ -124,8 +124,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::Post('/place_order', [ProductOrderController::class, 'store']);
     Route::delete('/product-delete/{id}',[ProductOrderController::class,'destroy']);
     Route::get('/order-details/{id}',[ProductOrderController::class,'orderDetails']);
-    Route::get('/get-order',[ProductOrderController::class,'getOrder']);
+    // Route::get('/get-order',[ProductOrderController::class,'getAddToOrder']);
     Route::get('/order-count',[ProductOrderController::class,'orderCount']);
+    Route::get('/get-order',[ProductOrderController::class,'getOrder']);
 
 
     # Offer Promotion Routes
@@ -137,7 +138,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/flag_post',[FlagController::class,'postFlagged']);
     Route::post('store-comment',[PostController::class,'storeComment']);
     Route::get('get-comment/{postId}',[PostController::class,'getComment']);
-    Route::post('store-post-saves',[PostController::class,'storePostSaves']);
+    Route::post('store-saves-post',[PostController::class,'storePostSaves']);
+    Route::get('get-saves-post',[PostController::class,'getPostSaves']);
 
     # Comments Routes
     Route::post('/flag_comment',[FlagController::class,'commentFlagged']);

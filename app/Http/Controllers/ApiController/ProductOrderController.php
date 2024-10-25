@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Models\AddToCart;
 use App\Models\CustomerAddressModel;
+use App\Models\OrderDetails;
 use App\Models\OrderModel;
 use App\Models\ProductModel;
 use App\Models\SettingModel;
@@ -26,7 +27,7 @@ class ProductOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function getOrder(Request $request)
+    public function getAddToOrder(Request $request)
     {
         $searchTerm = $request->input('search');
     
@@ -44,6 +45,8 @@ class ProductOrderController extends Controller
         return response()->json($orders);
     }
     
+
+ 
 
     /**
      * Show the form for creating a new resource.
@@ -80,7 +83,7 @@ class ProductOrderController extends Controller
                 $product = ProductModel::find($item['product_id']);
     
                 if ($product) {
-                    OrderModel::create([
+                    OrderDetails::create([
                         'product_id' => $item['product_id'],
                         'customer_id' => $user->id,
                         'designer_id' => $product->created_by, // Use created_by from the product
@@ -94,8 +97,14 @@ class ProductOrderController extends Controller
                     // Assuming you have a way to get the product price
                     $productPrice = $product->price ?? 0;
                     $totalAmount += $productPrice * $item['quantity'];
+
                 }
             }
+            OrderModel::create([
+                'customer_id'=>Auth::id(),
+                'invoice_id' => $invoiceID,
+                'total_amount' => $totalAmount,
+            ]);
     
             // Fetch the default currency setting
             $defaultCurrency = SettingModel::where('key', 'default_currency')->first();
@@ -123,9 +132,10 @@ class ProductOrderController extends Controller
                         ->asJson()
                         ->post();
     
+                        dd($response);
             return response()->json([
                 'message' => 'Orders have been created successfully',
-                'payment_gateway_url' => $response->transaction->url,
+                // 'payment_gateway_url' => $response->transaction->url,
             ]);
     
         } catch (Exception $ex) {
