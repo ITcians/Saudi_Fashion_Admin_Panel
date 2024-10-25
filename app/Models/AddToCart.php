@@ -14,5 +14,8 @@ class AddToCart extends Model
     protected $fillable = [
         'customer_id',
         'product_id',
+        'color_id',
+        'size_id',
+        'quantity',
     ];
 }

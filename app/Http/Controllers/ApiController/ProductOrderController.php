@@ -167,11 +167,17 @@ class ProductOrderController extends Controller
         try {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
+            'color_id' => 'required',
+            'size_id' => 'required',
+            'quantity' => 'required',
         ]);
 
         AddToCart::create([
             'customer_id' => Auth::id(),
             'product_id' => $request->product_id,
+            'color_id' => $request->color_id,
+            'size_id' => $request->size_id,
+            'quantity' => $request->quantity,
         ]);
 
         $this->res->message = 'Add TO Cart Added Successfully!';
