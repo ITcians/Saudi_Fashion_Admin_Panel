@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('customer_id');
+            $table->bigInteger('desginer_id');
             $table->bigInteger('invoice_id');
             $table->bigInteger('total_amount');
             $table->string('status')->default(403); // when desginer accept the order the status will be 200

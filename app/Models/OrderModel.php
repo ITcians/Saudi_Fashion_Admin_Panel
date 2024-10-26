@@ -12,9 +12,15 @@ class OrderModel extends Model
     protected $table = 'orders';
     protected $fillable = [
         'customer_id' ,
+        'desginer_id',
         'invoice_id',
         'total_amount',
         'status',
     ];
+
+    public function orderDetails()
+    {
+        return $this->belongsTo(OrderDetails::class,'order_id');
+    }
 
 }

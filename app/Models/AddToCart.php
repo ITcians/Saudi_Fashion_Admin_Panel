@@ -18,4 +18,17 @@ class AddToCart extends Model
         'size_id',
         'quantity',
     ];
+
+    public function Product()
+    {
+        return $this->belongsTo(ProductModel::class,'product_id');
+    }
+    public function Color()
+    {
+        return $this->belongsTo(ColorModel::class,'color_id');
+    }
+    public function Size()
+    {
+        return $this->belongsTo(ProductSizeModel::class,'size_id');
+    }
 }

@@ -64,9 +64,9 @@ class ProductOrderController extends Controller
     {
         try {
             $data = $this->validate($request, [
+                'address_id' => 'required',
                 'cart_data' => 'required|array',
                 'cart_data.*.product_id' => 'required|integer',
-                'cart_data.*.address_id' => 'required|integer',
                 'cart_data.*.size_id' => 'required|integer',
                 'cart_data.*.color_id' => 'required|integer',
                 'cart_data.*.quantity' => 'required|integer|min:1',
@@ -78,41 +78,49 @@ class ProductOrderController extends Controller
             $user = Auth::user();
             $totalAmount = 0;
     
-            // Loop through the cart data and create orders
+            // Order Model
+            $orderData = [
+                'customer_id' => $user->id,
+                'invoice_id' => $invoiceID,
+                'total_amount' => 0,
+                'desginer_id' => 0,
+            ];
+            $order = OrderModel::create($orderData);
+    
+            // Order Details Model
             foreach ($data['cart_data'] as $item) {
                 $product = ProductModel::find($item['product_id']);
-    
                 if ($product) {
+                    $productPrice = $product->price ?? 0;
+                    $itemTotal = $productPrice * $item['quantity'];
+                    $totalAmount += $itemTotal;
+
                     OrderDetails::create([
                         'product_id' => $item['product_id'],
+                        'order_id' => $order->id,
                         'customer_id' => $user->id,
-                        'designer_id' => $product->created_by, // Use created_by from the product
-                        'address_id' => $item['address_id'],
+                        'designer_id' => $product->created_by,
+                        'address_id' => $request->address_id,
                         'color_id' => $item['color_id'],
                         'size_id' => $item['size_id'],
                         'quantity' => $item['quantity'],
                         'invoice_id' => $invoiceID,
                     ]);
-    
-                    // Assuming you have a way to get the product price
-                    $productPrice = $product->price ?? 0;
-                    $totalAmount += $productPrice * $item['quantity'];
-
                 }
             }
-            OrderModel::create([
-                'customer_id'=>Auth::id(),
-                'invoice_id' => $invoiceID,
+            
+            // Update the total amount and designer_id in the order
+            $order->update([
                 'total_amount' => $totalAmount,
+                'designer_id' => $product->created_by,
             ]);
-    
             // Fetch the default currency setting
-            $defaultCurrency = SettingModel::where('key', 'default_currency')->first();
+            $defaultCurrency = SettingModel::where('key', 'default_currency')->value('value');
     
             // Prepare payment data
             $paymentData = [
                 'amount' => $totalAmount,
-                'currency' => $defaultCurrency->value,
+                'currency' => $defaultCurrency,
                 'customer' => [
                     'first_name' => $user->first_name,
                     'email' => $user->email,
@@ -132,7 +140,6 @@ class ProductOrderController extends Controller
                         ->asJson()
                         ->post();
     
-                        dd($response);
             return response()->json([
                 'message' => 'Orders have been created successfully',
                 // 'payment_gateway_url' => $response->transaction->url,
@@ -140,11 +147,10 @@ class ProductOrderController extends Controller
     
         } catch (Exception $ex) {
             return response()->json(['error' => $ex->getMessage()], 422);
-        } catch (Exception $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+        } catch (Exception $ex) {
+            return response()->json(['error' => $ex->getMessage()], 500);
         }
     }
-    
     
 
 
@@ -199,50 +205,10 @@ class ProductOrderController extends Controller
         }
     }
 
-
-    public function getAddToCart(Request $request)
+    public function getAddToCart()
     {
-        $searchTerm = $request->input('search'); 
-    
-        $productCounts = AddToCart::where('customer_id', Auth::id())
-            ->select('product_id')
-            ->groupBy('product_id')
-            ->selectRaw('count(*) as count')
-            ->orderBy('count', 'desc')
-            ->get();
-    
-        // Convert the collection to an array
-        $productCountsArray = $productCounts->toArray();
-        $productIds = array_column($productCountsArray, 'product_id');
-    
-        // Start building the query for products
-        $productQuery = ProductModel::whereIn('id', $productIds);
-    
-        // Apply the search filter if it exists
-        if ($searchTerm) {
-            $productQuery->where('title', 'like', '%' . $searchTerm . '%'); 
-        }
-    
-        // Eager load relationships
-        $product = $productQuery->with([
-            'media',
-            'category',
-            'sub_category',
-            'sizes',
-            'colors',
-        ])->get();
-    
-        // Order the products based on their counts
-        $orderedProduct = $product->sortBy(function ($product) use ($productCountsArray) {
-            $count = collect($productCountsArray)->firstWhere('product_id', $product->id);
-            return $count ? $count['count'] : 0;
-        })->reverse();
-    
-        $formattedproduct = [];
-        foreach ($orderedProduct as $product) {
-        $formattedproduct[] = $product; // Add the entire product object
-        }
-        return response()->json($formattedproduct);
+        $order = AddToCart::where('customer_id',Auth::id())->with('Product','Color','Size',)->latest()->paginate(10);
+        return response()->json($order);
     }
 
     public function destroy(string $id)
@@ -278,6 +244,12 @@ class ProductOrderController extends Controller
         return response()->json($orderDetails);
     }
     
+    public function getOrder()
+    {
+        $order = OrderModel::where('customer_id',Auth::id())->with('orderDetails')->latest()->paginate(10);
+        return response()->json($order);
+    }
     
+
 }
 
