@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('customer_id');
             $table->bigInteger('product_id');
-            $table->bigInteger('color_id');
-            $table->bigInteger('size_id');
+            $table->longText('color_id');
+            $table->longText('size_id');
             $table->bigInteger('quantity');
             $table->timestamps();
         });

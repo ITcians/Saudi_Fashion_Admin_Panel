@@ -31,4 +31,9 @@ class AddToCart extends Model
     {
         return $this->belongsTo(ProductSizeModel::class,'size_id');
     }
+
+    public function Media()
+    {
+        return $this->belongsTo(ProductMediaModel::class,'product_id');
+    }
 }
