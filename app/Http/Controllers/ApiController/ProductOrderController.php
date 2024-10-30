@@ -193,7 +193,6 @@ class ProductOrderController extends Controller
 
     public function addToCart(Request $request)
     {
-        // return $request->all();
         try {
             $data = $this->validate($request, [
                 'product_id' => 'required',
@@ -220,6 +219,34 @@ class ProductOrderController extends Controller
     }
     
     
+    public function updateAddToCart(Request $request, string $id)
+{
+    try {
+        // Validate the request data
+        $data = $this->validate($request, [
+            'color_id' => 'required',
+            'size_id' => 'required',
+            'quantity' => 'required|integer',
+        ]);
+
+        $addToCart = AddToCart::where('product_id',$id)->update([
+            'color_id' => $request->color_id,
+            'size_id' => $request->size_id,
+            'quantity' => $request->quantity,
+        ]);
+        if ($addToCart) {
+
+            $this->res->message = 'Cart updated successfully!';
+        } else {
+            $this->res->error = 'Item not found in cart.';
+        }
+    } catch (Exception $ex) {
+        $this->res->error = $ex->getMessage();
+    } finally {
+        return $this->res;
+    }
+}
+
 
     public function getAddToCart()
     {
@@ -229,22 +256,21 @@ class ProductOrderController extends Controller
 
     public function destroy(string $id)
     {
-
         try {
-            // Find the cart item based on customer ID and product ID
-            $addToCart = AddToCart::where('customer_id', Auth::id())
-                ->where('product_id', $id); // Use first() to get a single record
-    
+            // Find the cart item based on product ID
+            $addToCart = AddToCart::where('product_id', $id)->first();
+        
             if ($addToCart) {
                 $addToCart->delete(); // Delete the item if it exists
-                return response()->json(['success', 'Item removed from cart successfully.']);
+                return response()->json(['status' => 'success', 'message' => 'Item removed from cart successfully.']);
             } else {
-                return response()->json(['warning', 'Item not found in cart.']);
+                return response()->json(['status' => 'warning', 'error' => 'Item not found in cart.']);
             }
         } catch (Exception $e) {
-            return response()->json(['danger', 'Failed to delete: ' . $e->getMessage()]);
+            return response()->json(['status' => 'danger', 'error' => 'Failed to delete: ' . $e->getMessage()]);
         }
     }
+    
 
     public function orderDetails(string $id)
     {

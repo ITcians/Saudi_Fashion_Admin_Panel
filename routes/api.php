@@ -119,10 +119,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/delete_join_event/{id}', [EventController::class, 'deleteJoin']);
 
     # Product Order Route
-    Route::post('/add-to-cart-find',[ProductOrderController::class,'addToCart']);
+    Route::post('/add-to-cart',[ProductOrderController::class,'addToCart']);
+    Route::post('/update-add-to-cart/{id}',[ProductOrderController::class,'updateAddToCart']);
     Route::get('/get-add-to-cart',[ProductOrderController::class,'getAddToCart']);
     Route::Post('/place_order', [ProductOrderController::class, 'store']);
-    Route::delete('/product-delete/{id}',[ProductOrderController::class,'destroy']);
+    Route::delete('/add-to-cart-delete/{id}',[ProductOrderController::class,'destroy']);
     Route::get('/order-details/{id}',[ProductOrderController::class,'orderDetails']);
     // Route::get('/get-order',[ProductOrderController::class,'getAddToOrder']);
     Route::get('/order-count',[ProductOrderController::class,'orderCount']);
