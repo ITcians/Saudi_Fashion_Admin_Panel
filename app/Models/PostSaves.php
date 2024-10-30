@@ -19,10 +19,10 @@ class PostSaves extends Model
     {
         return $this->belongsTo(PostModel::class,'post_id');
     }
-
-    public function user()
+    public function createdBy()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'created_by'); // Adjust the key if it's different
     }
+    
 
 }

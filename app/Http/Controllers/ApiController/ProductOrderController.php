@@ -205,9 +205,8 @@ class ProductOrderController extends Controller
             AddToCart::create([
                 'customer_id' => Auth::id(),
                 'product_id' => $request->product_id,
-                  'color_id' => $request->color_id, 
+                'color_id' => $request->color_id, 
                 'size_id' => $request->size_id,
-
                 'quantity' => $request->quantity,
             ]);
     

@@ -475,9 +475,12 @@ class PostController extends Controller
 
     public function getPostSaves()
     {
-        $post = PostSaves::where('user_id',Auth::id())->with('post','user')->latest()->paginate(10);
-
-        return response()->json($post);
+        $postSaves = PostSaves::where('user_id', Auth::id())
+            ->with(['post', 'post.createdBy']) // Eager load createdBy relationship
+            ->latest()
+            ->paginate(10);
+    
+        return response()->json($postSaves);
     }
-
+    
 }
