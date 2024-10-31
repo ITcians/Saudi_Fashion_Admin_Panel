@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     # Product APIs
     Route::POST('/get-product',[ProductController::class,'getProduct']);
+    Route::get('/product-details/{id}',[ProductController::class,'productDetails']);
     Route::post('/create_product', [ProductController::class, 'store']);
     Route::POST('/store_color_for_product/{productId}', [ProductController::class, 'ColorSizes']); // In this route color added when product create
     Route::get('/size', function () {
@@ -157,6 +158,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     # Get the Desginer site data
     Route::get('get-desginer-dashboard',[UserController::class,'desginerDashboard']);
+
+    #Community Search
+    Route::get('/search-community',[PostController::class,'communitySearch']);
     
 });
 

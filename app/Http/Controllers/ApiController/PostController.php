@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\EventsModel;
 use App\Models\FellowsModel;
 use App\Models\HashtagModel;
 use App\Models\PostMediaModel;
@@ -117,6 +118,51 @@ class PostController extends Controller
         //     'post_id' => $highestPostID,
         //     'post' => $posts
         // ];
+    }
+    
+    public function communitySearch(Request $request)
+    {
+        $searchTerm = $request->input('search', '');
+    
+        // Get follower details
+        $followerDetails = FellowsModel::where('follower_user_id', Auth::id())
+            ->get()
+            ->pluck('following_user_id');
+
+            // return $followerDetails;
+    
+        // Initialize a collection to hold the combined results
+        $combinedResults = collect();
+    
+        // Search in PostModel
+        if ($searchTerm) {
+            $posts = PostModel::whereIn('created_by', $followerDetails)
+                ->where(function ($q) use ($searchTerm) {
+                    $q->where('post', 'like', '%' . $searchTerm . '%');
+                })
+                ->with(['createdBy'])
+                ->get();
+            // return $posts;
+            $combinedResults = $combinedResults->merge($posts);
+
+                   // return $searchTerm;
+        $events = EventsModel::where(function ($query) use ($searchTerm) {
+            $query->where('event_name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('event_description', 'like', '%' . $searchTerm . '%');
+        })
+        ->with(['attendies'])
+        ->get();
+    
+        // Merge events into combined results
+        $combinedResults = $combinedResults->merge($events);
+        }
+    
+        // Return combined results with pagination for events
+        return [
+            'posts' => $posts ?? collect(),
+            'events' => $events ?? collect(),
+
+        ];
     }
     
     /**

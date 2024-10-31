@@ -71,7 +71,17 @@ class ProductController extends Controller
         }
     }
     
-    
+    public function productDetails(string $id)
+    {
+        $product = ProductModel::where('id',$id)->with([
+            'media',
+            'category',
+            'sub_category',
+            'sizes',
+            'colors',
+        ])->get();
+        return response()->json($product);
+    }
 
     function myProducts(Request $request){
         if ($request->input('search')) {

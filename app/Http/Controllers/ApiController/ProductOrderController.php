@@ -94,10 +94,6 @@ class ProductOrderController extends Controller
             foreach ($data['cart_data'] as $item) {
                 $product = ProductModel::find($item['product_id']);
                 if ($product) {
-                    // Check product stock (assuming 'stock' is the available quantity)
-                    // if ($item['quantity'] > $product->stock) {
-                    //     return response()->json(['error' => 'Insufficient stock for product ID ' . $product['title']], 422);
-                    // }
     
                     $productPrice = $product->price ?? 0;
                     $itemTotal = $productPrice * $item['quantity'];
@@ -142,7 +138,7 @@ class ProductOrderController extends Controller
                     ],
                 ],
                 'source' => ['id' => 'src_card'],
-                'redirect' => ['url' => "http://192.168.100.8:8000/api/callback/$invoiceID"],
+                'redirect' => ['url' => "http://192.168.100.8:8001/api/callback/$invoiceID"],
             ];
     
             // Make the API request to the payment gateway
@@ -154,7 +150,7 @@ class ProductOrderController extends Controller
     
             return response()->json([
                 'message' => 'Orders have been created successfully',
-                'payment_gateway_url' => $response->transaction->url ?? null,
+                // 'payment_gateway_url' => $response->transaction->url ?? null,
             ]);
     
         } catch (Exception $ex) {
@@ -248,11 +244,25 @@ class ProductOrderController extends Controller
 }
 
 
-    public function getAddToCart()
+    public function getAddToCart(Request $request)
     {
-        $order = AddToCart::where('customer_id',Auth::id())->with('Product','Color','Size','Media')->latest()->paginate(10);
+        $searchTerm = $request->input('search');
+
+        $query = AddToCart::where('customer_id', Auth::id())
+            ->with('Product', 'Color', 'Size', 'Media');
+
+        if ($searchTerm) {
+            $query->whereHas('Product', function ($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Get the latest items and paginate
+        $order = $query->latest()->paginate(10);
+
         return response()->json($order);
     }
+
 
     public function destroy(string $id)
     {
