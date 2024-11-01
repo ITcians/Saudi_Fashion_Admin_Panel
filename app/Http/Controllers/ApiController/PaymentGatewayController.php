@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddToCart;
 use App\Models\OrderModel;
 use App\Models\PaymentGatewayModel;
 use App\Models\SettingModel;
@@ -43,10 +44,18 @@ class PaymentGatewayController extends Controller
             $TapModel->amount = $response->amount;
             $TapModel->save();
             
-            // Change order status
-            OrderModel::where('invoice_id',$invoiceID)->update([
-                'status' => 200
-            ]);
+            // Update the order status
+            $orderUpdated = OrderModel::where('invoice_id', $invoiceID)->update(['status' => 200]);
+
+            // Retrieve the order to get the customer_id
+            $order = OrderModel::where('invoice_id', $invoiceID)->first();
+
+            if ($order) {
+                // Delete items from the cart for the specific customer
+                $addToCartDeleted = AddToCart::where('customer_id', $order->customer_id)->delete();
+            }
+
+
        } else {
         return view('paymentdeclained',compact('response'));
        }
