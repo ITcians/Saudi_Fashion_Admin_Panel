@@ -18,4 +18,9 @@ class ProductMediaModel extends Model
     function product(){
         return $this->belongsTo(ProductModel::class,'product_id');
     }
+
+    public function addToCarts()
+    {
+        return $this->hasMany(AddToCart::class, 'product_id', 'product_id');
+    }
 }

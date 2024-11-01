@@ -102,8 +102,9 @@ class UserController extends Controller
 
     // update image profile
 
-    public function updateProfileImage(Request $request, )
+    public function updateProfileImage(Request $request)
     {
+        // return $request->file('image');
         try {
             $validator = Validator::make($request->all(), [
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif' // Adjust validation rules as needed

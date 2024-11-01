@@ -32,7 +32,8 @@ class AddToCart extends Model
         return $this->belongsTo(ProductSizeModel::class,'size_id');
     }
 
+    
     function Media(){
-        return $this->belongsTo(ProductMediaModel::class,'product_id');
+        return $this->hasOne(ProductMediaModel::class,'product_id');
     }
 }   

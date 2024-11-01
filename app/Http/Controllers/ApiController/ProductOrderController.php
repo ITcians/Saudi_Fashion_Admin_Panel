@@ -186,33 +186,47 @@ class ProductOrderController extends Controller
     {
         //
     }
-
     public function addToCart(Request $request)
     {
         try {
+            // Validate incoming request data
             $data = $this->validate($request, [
                 'product_id' => 'required',
                 'color_id' => 'required',
-                'size_id' => 'required',
-                'quantity' => 'required|integer',
+                'size_id' => 'required', // Ensure size exists
+                'quantity' => 'required', // Ensure quantity is a positive integer
             ]);
     
-            AddToCart::create([
-                'customer_id' => Auth::id(),
-                'product_id' => $request->product_id,
-                'color_id' => $request->color_id, 
-                'size_id' => $request->size_id,
-                'quantity' => $request->quantity,
-            ]);
+            $incre = 1;
+
+            $addToCart = AddToCart::where('customer_id', Auth::id())
+                ->where('product_id', $request->product_id)
+                ->where('color_id', $request->color_id)
+                ->where('size_id', $request->size_id)
+                ->first(); 
     
-            $this->res->message = 'Add to Cart Added Successfully!';
-            
+            if ($addToCart) {
+                $addToCart->quantity += $incre; 
+                $addToCart->save(); 
+                $this->res->message = 'Item updated successfully!';
+            } else {
+                // Item does not exist, create a new entry
+                AddToCart::create([
+                    'customer_id' => Auth::id(), // Include the customer ID
+                    'product_id' => $request->product_id,
+                    'color_id' => $request->color_id,
+                    'size_id' => $request->size_id,
+                    'quantity' => $request->quantity,
+                ]);
+                $this->res->message = 'Item added successfully!';
+            }
         } catch (Exception $ex) {
-            $this->res->error = $ex->getMessage();
+            $this->res->error = $ex->getMessage(); // Capture any exception message
         } finally {
-            return $this->res;
+            return $this->res; // Return the response object
         }
     }
+    
     
     
     public function updateAddToCart(Request $request, string $id)
@@ -225,7 +239,7 @@ class ProductOrderController extends Controller
             'quantity' => 'required|integer',
         ]);
 
-        $addToCart = AddToCart::where('product_id',$id)->update([
+        $addToCart = AddToCart::where('id',$id)->update([
             'color_id' => $request->color_id,
             'size_id' => $request->size_id,
             'quantity' => $request->quantity,
@@ -249,7 +263,7 @@ class ProductOrderController extends Controller
         $searchTerm = $request->input('search');
 
         $query = AddToCart::where('customer_id', Auth::id())
-            ->with('Product', 'Color', 'Size', 'Media');
+            ->with('Product', 'Color', 'Size', 'product.media');
 
         if ($searchTerm) {
             $query->whereHas('Product', function ($q) use ($searchTerm) {
