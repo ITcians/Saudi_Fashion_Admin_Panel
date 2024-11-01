@@ -282,7 +282,7 @@ class ProductOrderController extends Controller
     {
         try {
             // Find the cart item based on product ID
-            $addToCart = AddToCart::where('product_id', $id)->first();
+            $addToCart = AddToCart::where('id', $id)->first();
         
             if ($addToCart) {
                 $addToCart->delete(); // Delete the item if it exists
