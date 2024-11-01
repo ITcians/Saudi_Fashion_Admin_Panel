@@ -175,7 +175,7 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'price' => 'required',
                 'category_id' => 'required',
-                'sub_category_id' => 'required',
+                'sub_category_id' => 'nullable',
                 'product_id' => "required|exists:products,id"
             ]);
 
@@ -194,10 +194,12 @@ class ProductController extends Controller
                 return response()->json(['error' => 'You are not authorized to update this product.'], 403);
             }
 
+            
+            Info::create(['message' => 'price',$request->price]);
             // Update product data
             $product->price = $request->price;
             $product->category_id = $request->category_id;
-            $product->sub_category_id = $request->sub_category_id;
+            $product->sub_category_id = $request->sub_category_id ?? 0;
             $product->save();
 
             return response()->json([

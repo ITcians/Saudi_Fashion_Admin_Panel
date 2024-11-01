@@ -33,12 +33,13 @@ class PaymentGatewayController extends Controller
                     ->asJson()
                     ->get();
 
+                    // dd($response);
        if ($response->status == 'CAPTURED') {
             $TapModel = new TapModel();
             $TapModel->name = $response->customer->first_name;
             $TapModel->email = $response->customer->email;
             $TapModel->tran_id = $response->id;
-            $TapModel->payment_method = $response->payment_method;
+            $TapModel->payment_method = $response->card->scheme;
             $TapModel->amount = $response->amount;
             $TapModel->save();
             

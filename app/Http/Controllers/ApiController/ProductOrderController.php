@@ -150,7 +150,7 @@ class ProductOrderController extends Controller
     
             return response()->json([
                 'message' => 'Orders have been created successfully',
-                // 'payment_gateway_url' => $response->transaction->url ?? null,
+                'payment_gateway_url' => $response->transaction->url ?? null,
             ]);
     
         } catch (Exception $ex) {
