@@ -29,9 +29,14 @@ use App\Http\Controllers\SubCategoryController;
 |
 */
 
-// Route::get('/test', function () {
-//     return 'welcome';
-// });
+Route::get('/privacy-policy', function () {
+    return view('polices.privacypolices');
+});
+
+Route::get('/terms-conditions', function () {
+    return view('polices.terms&conditions');
+});
+
 
 
 

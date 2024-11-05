@@ -113,6 +113,7 @@ class ProductOrderController extends Controller
     
                     // Update designerId from the first product or keep track of multiple designers as needed
                     $designerId = $product->created_by;
+                    // return 'desginer id'.$designerId;
                 }
             }
     
