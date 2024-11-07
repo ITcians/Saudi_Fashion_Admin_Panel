@@ -33,7 +33,7 @@ Route::get('/privacy-policy', function () {
     return view('polices.privacypolices');
 });
 
-Route::get('/terms-conditions', function () {
+Route::get('/terms-condition', function () {
     return view('polices.terms&conditions');
 });
 

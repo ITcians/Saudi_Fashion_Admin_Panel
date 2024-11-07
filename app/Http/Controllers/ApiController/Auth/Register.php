@@ -74,63 +74,63 @@ class Register extends Controller
      */
 
 
-    public function store(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'fullname' => 'required',
-                'username' => 'required',
-                'email' => 'required|email',
-                'country_code' => 'required',
-                'phone' => 'required',
-                'bio' => 'nullable',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
-            }
-
-            // Generate 4-digit numeric OTP
-            $otp = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-
-            $userData = [
-                'fullname' => $request->fullname,
-                'username' => $request->username,
-                'email' => $request->email,
-                'country_code' => $request->country_code,
-                'phone' => $request->phone,
-            ];
-
-            // Create user record
-            $register = User::create($userData);
-
-            // Calculate expiration time (24 hours from now)
-            $expirationTime = Carbon::now()->addHours(24);
-
-            $is_used = 0;
-            $otps = [
-                'otp' => $otp,
-                'is_expired' => $expirationTime,
-                'is_used' => $is_used,
-                'email' => $request->email,
-            ];
-
-            // Save OTP details to the database
-            // Assuming you have an Otp model and otps relationship defined in the User model
-            $otps = otps::create($otps);
-
-            // Generate a bearer token
-            $token =  $register->createToken("API TOKEN")->plainTextToken;
-
-            // Send OTP to the user's email
-            Mail::to($request->email)->send(new RegistrationOtp($otp));
-
-            return response()->json(['message' => 'You are registered successfully', 'UserData' => $userData, 'access_token' => $token]);
-        } catch (\Exception $ex) {
-            return response()->json(['error' => $ex->getMessage()], 500);
-        }
-    }
-
+     public function store(Request $request)
+     {
+         try {
+             $validator = Validator::make($request->all(), [
+                 'fullname' => 'required',
+                 'username' => 'required',
+                 'email' => 'required|email',
+                 'country_code' => 'required',
+                 'phone' => 'required',
+                 'bio' => 'nullable',
+             ]);
+ 
+             if ($validator->fails()) {
+                 return response()->json(['error' => $validator->errors()], 400);
+             }
+ 
+             // Generate 4-digit numeric OTP
+             $otp = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+ 
+             $userData = [
+                 'fullname' => $request->fullname,
+                 'username' => $request->username,
+                 'email' => $request->email,
+                 'country_code' => $request->country_code,
+                 'phone' => $request->phone,
+             ];
+ 
+             // Create user record
+             $register = User::create($userData);
+ 
+             // Calculate expiration time (24 hours from now)
+             $expirationTime = Carbon::now()->addHours(24);
+ 
+             $is_used = 0;
+             $otps = [
+                 'otp' => $otp,
+                 'is_expired' => $expirationTime,
+                 'is_used' => $is_used,
+                 'email' => $request->email,
+             ];
+ 
+             // Save OTP details to the database
+             // Assuming you have an Otp model and otps relationship defined in the User model
+             $otps = otps::create($otps);
+ 
+             // Generate a bearer token
+             $token =  $register->createToken("API TOKEN")->plainTextToken;
+ 
+             // Send OTP to the user's email
+             Mail::to($request->email)->send(new RegistrationOtp($otp));
+ 
+             return response()->json(['message' => 'You are registered successfully', 'UserData' => $userData, 'access_token' => $token]);
+         } catch (\Exception $ex) {
+             return response()->json(['error' => $ex->getMessage()], 500);
+         }
+     }
+ 
 
     /**
      * Display the specified resource.
