@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('subscribed_to_newsletters')->default(0);
             $table->integer('terms_and_condition_agreement')->default(0);
             $table->longText('fcm_token')->nullable();
-            $table->integer('account_status')->default(200);
+            $table->integer('account_status')->default(200); // 200 Active 403 Inactive
             $table->longText('bio')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

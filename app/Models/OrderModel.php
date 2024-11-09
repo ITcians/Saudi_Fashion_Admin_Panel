@@ -18,9 +18,20 @@ class OrderModel extends Model
         'status',
     ];
 
+    
     public function orderDetails()
     {
-        return $this->belongsTo(OrderDetails::class,'id');
+        return $this->hasMany(OrderDetails::class, 'order_id');
     }
+
+    public function customer() 
+    {
+        return $this->belongsTo(User::class,'customer_id');
+    }
+    public function desginer() 
+    {
+        return $this->belongsTo(User::class,'desginer_id');
+    }
+
 
 }

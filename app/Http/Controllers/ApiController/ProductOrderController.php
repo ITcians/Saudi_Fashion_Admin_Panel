@@ -79,49 +79,75 @@ class ProductOrderController extends Controller
     
             $user = Auth::user();
             $totalAmount = 0;
-            $designerId = null;
     
-            // Order Model
-            $orderData = [
-                'customer_id' => $user->id,
-                'invoice_id' => $invoiceID,
-                'total_amount' => 0,
-                'desginer_id' => 0,
-            ];
-            $order = OrderModel::create($orderData);
+            // To track orders by designer
+            $ordersByDesigner = [];
+            // To track processed product combinations
+            $processedCombinations = [];
     
-            // Order Details Model
+            // Loop through the cart data to create orders
             foreach ($data['cart_data'] as $item) {
                 $product = ProductModel::find($item['product_id']);
-                if ($product) {
     
+                if ($product) {
                     $productPrice = $product->price ?? 0;
                     $itemTotal = $productPrice * $item['quantity'];
                     $totalAmount += $itemTotal;
     
-                    OrderDetails::create([
-                        'product_id' => $item['product_id'],
-                        'order_id' => $order->id,
-                        'customer_id' => $user->id,
-                        'designer_id' => $product->created_by,
-                        'address_id' => $request->address_id,
-                        'color_id' => $item['color_id'],
-                        'size_id' => $item['size_id'],
-                        'quantity' => $item['quantity'],
-                        'invoice_id' => $invoiceID,
-                    ]);
+                    // Check if the designer (created_by) already has an order created
+                    if (!isset($ordersByDesigner[$product->created_by])) {
+                        // If not, create a new order for this designer
+                        $order = OrderModel::create([
+                            'customer_id' => $user->id,
+                            'invoice_id' => $invoiceID,
+                            'desginer_id' => $product->created_by,
+                            'total_amount' => 0, // Total will be updated later
+                        ]);
     
-                    // Update designerId from the first product or keep track of multiple designers as needed
-                    $designerId = $product->created_by;
-                    // return 'desginer id'.$designerId;
+                        // Store the order ID in the array, indexed by designer ID
+                        $ordersByDesigner[$product->created_by] = [
+                            'order' => $order,
+                            'total_amount' => 0, // Initialize total amount for this order
+                        ];
+                    } else {
+                        // Retrieve the existing order for this designer
+                        $order = $ordersByDesigner[$product->created_by]['order'];
+                    }
+    
+                    // Create a unique combination key for product_id, color_id, and size_id
+                    $combinationKey = $product->id . '-' . $item['color_id'] . '-' . $item['size_id'];
+    
+                    // Check if this combination has already been processed for this product
+                    if (!isset($processedCombinations[$combinationKey])) {
+                        // Create OrderDetail for this product if the combination is unique
+                        OrderDetails::create([
+                            'product_id' => $item['product_id'],
+                            'order_id' => $order->id,
+                            'customer_id' => $user->id,
+                            'designer_id' => $product->created_by,
+                            'address_id' => $request->address_id,
+                            'color_id' => $item['color_id'],
+                            'size_id' => $item['size_id'],
+                            'quantity' => $item['quantity'],
+                            'invoice_id' => $invoiceID,
+                        ]);
+    
+                        // Mark this combination as processed
+                        $processedCombinations[$combinationKey] = true;
+    
+                        // Update the total amount for this designer's order
+                        $ordersByDesigner[$product->created_by]['total_amount'] += $itemTotal;
+                    }
                 }
             }
     
-            // Update the total amount and designer_id in the order
-            $order->update([
-                'total_amount' => $totalAmount,
-                'designer_id' => $designerId,
-            ]);
+            // After all items are processed, update the total amount for each order
+            foreach ($ordersByDesigner as $designerId => $orderData) {
+                // Update the total amount for each order
+                $orderData['order']->update([
+                    'total_amount' => $orderData['total_amount'],
+                ]);
+            }
     
             // Fetch the default currency setting
             $defaultCurrency = SettingModel::where('key', 'default_currency')->value('value');
@@ -151,7 +177,7 @@ class ProductOrderController extends Controller
     
             return response()->json([
                 'message' => 'Orders have been created successfully',
-                'payment_gateway_url' => $response->transaction->url ?? null,
+                // 'payment_gateway_url' => $response->transaction->url ?? null,
             ]);
     
         } catch (Exception $ex) {
@@ -160,6 +186,7 @@ class ProductOrderController extends Controller
             return response()->json(['error' => 'An unexpected error occurred: ' . $ex->getMessage()], 500);
         }
     }
+    
     
     
 
@@ -311,10 +338,18 @@ class ProductOrderController extends Controller
         return response()->json($orderDetails);
     }
     
-    public function getOrder()
+    public function getOrderForCustomer()
     {
-        $order = OrderModel::where('customer_id',Auth::id())->with('orderDetails')->latest()->paginate(10);
-        return response()->json($order);
+        $order = OrderModel::where('customer_id', Auth::id())
+        ->with(['orderDetails.product', 'customer'])
+        ->with('orderDetails.address')
+        ->with('orderDetails.color')
+        ->with('orderDetails.size')
+        ->latest()
+        ->paginate(10);
+    
+    return response()->json($order);
+    
     }
     
 

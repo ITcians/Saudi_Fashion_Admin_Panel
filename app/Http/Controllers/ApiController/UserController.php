@@ -246,8 +246,27 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function desginerDashboard()
+
+    public function deleteAccount()
     {
-        // $order = OrderModel::;
+        // Update the user's status to 403 (account is disabled)
+        $user = User::where('id', Auth::id())->update([
+            'account_status' => '403',
+        ]);
+    
+        // If using Laravel Passport (API authentication)
+        if (Auth::check()) {
+            $user = Auth::user();
+            $user->tokens->each(function ($token) {
+                $token->delete(); // Revoke all tokens associated with the user
+            });
+        }
+    
+        // Return a response indicating the account is disabled
+        return response()->json([
+            'message' => 'Your account has been disabled. Please contact support.',
+        ], 403); // You can return a 403 Forbidden response to indicate account disabled.
     }
+    
+    
 }
