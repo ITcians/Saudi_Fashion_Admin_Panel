@@ -338,10 +338,10 @@ class ProductOrderController extends Controller
         return response()->json($orderDetails);
     }
     
-    public function getOrderForCustomer()
+    public function getOrder()
     {
         $order = OrderModel::where('customer_id', Auth::id())
-        ->with(['orderDetails.product', 'customer'])
+        ->with( 'customer','desginer','orderDetails.product')
         ->with('orderDetails.address')
         ->with('orderDetails.color')
         ->with('orderDetails.size')
