@@ -12,10 +12,13 @@ class TapModel extends Model
     protected $table = 'tap_models';
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'tran_id',
         'payment_method',
         'amount',
     ];
+
+
 }

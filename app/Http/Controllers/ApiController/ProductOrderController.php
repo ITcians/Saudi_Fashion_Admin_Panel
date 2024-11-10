@@ -341,10 +341,14 @@ class ProductOrderController extends Controller
     public function getOrder()
     {
         $order = OrderModel::where('customer_id', Auth::id())
-        ->with( 'customer','desginer','orderDetails.product')
-        ->with('orderDetails.address')
-        ->with('orderDetails.color')
-        ->with('orderDetails.size')
+        ->with([
+            'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
+            'desginer', // Relationship with Designer model (belongsTo or hasOne)
+            'orderDetails.product', // Relationship with Product through OrderDetail (hasMany or belongsTo)
+            'orderDetails.address', // Relationship with Address through OrderDetail (belongsTo)
+            'orderDetails.color', // Relationship with Color through OrderDetail (belongsTo)
+            'orderDetails.size' // Relationship with Size through OrderDetail (belongsTo)
+        ])
         ->latest()
         ->paginate(10);
     
