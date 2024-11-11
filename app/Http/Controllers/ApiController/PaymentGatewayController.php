@@ -37,7 +37,7 @@ class PaymentGatewayController extends Controller
                     // dd($response);
        if ($response->status == 'CAPTURED') {
             $TapModel = new TapModel();
-            $TapModel->user_id = Auth::id();
+            $TapModel->invoice_id = $invoiceID;
             $TapModel->name = $response->customer->first_name;
             $TapModel->email = $response->customer->email;
             $TapModel->tran_id = $response->id;

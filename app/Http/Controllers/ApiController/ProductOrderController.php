@@ -10,6 +10,7 @@ use App\Models\OrderDetails;
 use App\Models\OrderModel;
 use App\Models\ProductModel;
 use App\Models\SettingModel;
+use App\Models\TapModel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -344,7 +345,7 @@ class ProductOrderController extends Controller
         ->with([
             'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
             'desginer', // Relationship with Designer model (belongsTo or hasOne)
-            'orderDetails.product', // Relationship with Product through OrderDetail (hasMany or belongsTo)
+            'orderDetails.product.media', // Relationship with Product through OrderDetail (hasMany or belongsTo)
             'orderDetails.address', // Relationship with Address through OrderDetail (belongsTo)
             'orderDetails.color', // Relationship with Color through OrderDetail (belongsTo)
             'orderDetails.size' // Relationship with Size through OrderDetail (belongsTo)
@@ -356,6 +357,11 @@ class ProductOrderController extends Controller
     
     }
     
+    public function getPaymentMethod ($id)
+    {
+        return TapModel::where('invoice_id',$id)->first();
+        
+    }
 
 }
 

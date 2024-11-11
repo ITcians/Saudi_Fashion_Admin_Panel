@@ -12,7 +12,7 @@ class TapModel extends Model
     protected $table = 'tap_models';
 
     protected $fillable = [
-        'user_id',
+        'invoice_id',
         'name',
         'email',
         'tran_id',
