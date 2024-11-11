@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Finally_;
+use Psy\Readline\Hoa\ExceptionIdle;
 use Validator;
 use stdClass;
 use Ixudra\Curl\Facades\Curl;
@@ -195,19 +196,61 @@ class ProductOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function updateOrderStatus(Request $request, string $id)
     {
-        //
+        try {
+            $data = $this->validate($request, [
+                'status' => 'required',
+            ]);
+    
+            $order = OrderModel::where('id',$id)->where('desginer_id',Auth::id())->first();
+    
+            if ($order) {
+                $order->update([
+                    'status' => $request->status,
+                ]);
+                $this->res->message = 'Order Status Updated Successfully!';
+            } else {
+                $this->res->error = 'Sorry! You are not a Designer for this order!';
+            }
+        } catch (Exception $ex) {
+            $this->res->error = $ex->getMessage();
+        } finally {
+            return $this->res;
+        }
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function cancelOrder(Request $request, string $id)
     {
-        //
+        try {
+            $data = $this->validate($request, [
+                'status' => 'required', 
+            ]);
+    
+            $order = OrderModel::where('id', $id)->where('status', 201)->orWhere('status',202)->first();
+    
+            if ($order) {
+                // Update order status
+                $order->update([
+                    'status' => $request->status,
+                ]);
+                $this->res->message = 'Your order has been canceled!';
+            } else {
+                $this->res->error = 'Your order cannot be canceled right now because it is in logistics or already processed!';
+            }
+        } catch (Exception $ex) {
+            // Catch and return the error message
+            $this->res->error = 'An error occurred: ' . $ex->getMessage();
+        } finally {
+            // Return the response (success or error)
+            return $this->res;
+        }
     }
-
+    
     /**
      * Update the specified resource in storage.
      */

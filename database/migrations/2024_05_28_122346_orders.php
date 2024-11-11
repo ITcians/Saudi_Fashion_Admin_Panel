@@ -17,9 +17,10 @@ return new class extends Migration
             $table->bigInteger('desginer_id');
             $table->bigInteger('invoice_id');
             $table->bigInteger('total_amount');
-            $table->string('status')->default(403); // when desginer accept the order the status will be 200
+            $table->string('status')->default(201); // approved 201 , 202  Inprocessing , 301 dispatched, 200 reached , 403 canceled 
             $table->timestamps();
         });
+        
     }
 
     /**
