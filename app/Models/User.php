@@ -28,7 +28,7 @@ class User extends Authenticatable
         'account_status',
         'account_type',
         'image',
-
+        'fcm_token',
     ];
 
      // Define the relationship to posts

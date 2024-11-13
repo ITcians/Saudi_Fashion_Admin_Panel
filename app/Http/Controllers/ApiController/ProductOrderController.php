@@ -384,7 +384,7 @@ class ProductOrderController extends Controller
     
     public function getOrder()
     {
-        $order = OrderModel::where('customer_id', Auth::id())
+        $order = OrderModel::where('customer_id', Auth::id())->where('status', '!=', 201)
         ->with([
             'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
             'desginer', // Relationship with Designer model (belongsTo or hasOne)
@@ -404,6 +404,23 @@ class ProductOrderController extends Controller
     {
         return TapModel::where('invoice_id',$id)->first();
         
+    }
+
+    public function getOrderForDesginer()
+    {
+        $order = OrderModel::where('desginer_id', Auth::id())->where('status', '!=', 201)
+        ->with([
+            'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
+            'desginer', // Relationship with Designer model (belongsTo or hasOne)
+            'orderDetails.product.media', // Relationship with Product through OrderDetail (hasMany or belongsTo)
+            'orderDetails.address', // Relationship with Address through OrderDetail (belongsTo)
+            'orderDetails.color', // Relationship with Color through OrderDetail (belongsTo)
+            'orderDetails.size' // Relationship with Size through OrderDetail (belongsTo)
+        ])
+        ->latest()
+        ->paginate(10);
+
+        return response()->json($order);
     }
 
 }
