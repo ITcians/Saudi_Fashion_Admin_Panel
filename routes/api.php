@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Auth Route
 Route::POST('register', [Register::class, 'store']);
 Route::POST('login', [Register::class, 'login']);
-Route::POST('forget_password_using_email', [Register::class, 'forget_password_using_email']);
+Route::POST('forget_password_using_email', [Register::class, 'forget_password_us    ing_email']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/send-notification',[NotificationController::class,'sendPushNotification']);

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('color_id');
             $table->integer('size_id');
             $table->bigInteger('quantity');
+            $table->bigInteger('total_amount');
             $table->bigInteger('invoice_id');
             $table->timestamps();
         });

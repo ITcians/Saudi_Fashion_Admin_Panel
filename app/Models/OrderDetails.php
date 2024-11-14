@@ -19,6 +19,7 @@ class OrderDetails extends Model
         'color_id',
         'size_id',
         'quantity',
+        'total_amount',
         'invoice_id',
         'status',
     ];

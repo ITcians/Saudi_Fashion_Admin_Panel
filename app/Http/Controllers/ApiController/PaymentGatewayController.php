@@ -46,7 +46,7 @@ class PaymentGatewayController extends Controller
             $TapModel->save();
             
             // Update the order status
-            $orderUpdated = OrderModel::where('invoice_id', $invoiceID)->update(['status' => 200]);
+            $orderUpdated = OrderModel::where('invoice_id', $invoiceID)->update(['status' => 201]);
 
             // Retrieve the order to get the customer_id
             $order = OrderModel::where('invoice_id', $invoiceID)->first();

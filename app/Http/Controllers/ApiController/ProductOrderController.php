@@ -69,10 +69,12 @@ class ProductOrderController extends Controller
         try {
             $data = $this->validate($request, [
                 'address_id' => 'required|integer',
+                'bill_amount' => 'required|integer',
                 'cart_data' => 'required|array',
                 'cart_data.*.product_id' => 'required|integer',
                 'cart_data.*.size_id' => 'required|integer',
                 'cart_data.*.color_id' => 'required|integer',
+                'cart_data.*.total_amount' => 'required|integer',
                 'cart_data.*.quantity' => 'required|integer|min:1',
             ]);
     
@@ -92,9 +94,9 @@ class ProductOrderController extends Controller
                 $product = ProductModel::find($item['product_id']);
     
                 if ($product) {
-                    $productPrice = $product->price ?? 0;
-                    $itemTotal = $productPrice * $item['quantity'];
-                    $totalAmount += $itemTotal;
+                    // $productPrice = $product->price ?? 0;
+                    // $itemTotal = $productPrice * $item['quantity'];
+                    // $totalAmount += $itemTotal;
     
                     // Check if the designer (created_by) already has an order created
                     if (!isset($ordersByDesigner[$product->created_by])) {
@@ -131,6 +133,7 @@ class ProductOrderController extends Controller
                             'color_id' => $item['color_id'],
                             'size_id' => $item['size_id'],
                             'quantity' => $item['quantity'],
+                            'total_amount' => $item['total_amount'],
                             'invoice_id' => $invoiceID,
                         ]);
     
@@ -138,25 +141,26 @@ class ProductOrderController extends Controller
                         $processedCombinations[$combinationKey] = true;
     
                         // Update the total amount for this designer's order
-                        $ordersByDesigner[$product->created_by]['total_amount'] += $itemTotal;
+
+                        // $ordersByDesigner[$product->created_by]['total_amount'] += $itemTotal;
                     }
                 }
             }
     
             // After all items are processed, update the total amount for each order
-            foreach ($ordersByDesigner as $designerId => $orderData) {
+            // foreach ($ordersByDesigner as $designerId => $orderData) {
                 // Update the total amount for each order
-                $orderData['order']->update([
-                    'total_amount' => $orderData['total_amount'],
+                $order->update([
+                    'total_amount' => $request->bill_amount,
                 ]);
-            }
+            // }
     
             // Fetch the default currency setting
             $defaultCurrency = SettingModel::where('key', 'default_currency')->value('value');
     
             // Prepare payment data
             $paymentData = [
-                'amount' => $totalAmount,
+                'amount' => $request->bill_amount,
                 'currency' => $defaultCurrency,
                 'customer' => [
                     'first_name' => $user->first_name,
@@ -179,7 +183,7 @@ class ProductOrderController extends Controller
     
             return response()->json([
                 'message' => 'Orders have been created successfully',
-                // 'payment_gateway_url' => $response->transaction->url ?? null,
+                'payment_gateway_url' => $response->transaction->url ?? null,
             ]);
     
         } catch (Exception $ex) {
@@ -384,7 +388,7 @@ class ProductOrderController extends Controller
     
     public function getOrder()
     {
-        $order = OrderModel::where('customer_id', Auth::id())->where('status', '!=', 201)
+        $order = OrderModel::where('customer_id', Auth::id())
         ->with([
             'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
             'desginer', // Relationship with Designer model (belongsTo or hasOne)
@@ -393,6 +397,7 @@ class ProductOrderController extends Controller
             'orderDetails.color', // Relationship with Color through OrderDetail (belongsTo)
             'orderDetails.size' // Relationship with Size through OrderDetail (belongsTo)
         ])
+
         ->latest()
         ->paginate(10);
     
@@ -408,7 +413,7 @@ class ProductOrderController extends Controller
 
     public function getOrderForDesginer()
     {
-        $order = OrderModel::where('desginer_id', Auth::id())->where('status', '!=', 201)
+        $order = OrderModel::where('desginer_id', Auth::id())
         ->with([
             'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
             'desginer', // Relationship with Designer model (belongsTo or hasOne)
