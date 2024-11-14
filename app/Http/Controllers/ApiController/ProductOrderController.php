@@ -213,7 +213,7 @@ class ProductOrderController extends Controller
                 $order->update([
                     'status' => $request->status,
                 ]);
-                $this->res->message = 'Order Status Updated Successfully!';
+                $this->res = ['message' => 'Order Status Updated Successfully!','status' => $request->status];
             } else {
                 $this->res->error = 'Sorry! You are not a Designer for this order!';
             }
