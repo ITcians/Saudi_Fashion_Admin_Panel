@@ -136,7 +136,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-order-status/{id}',[ProductOrderController::class,'updateOrderStatus']);
     Route::post('/cancel-order/{id}',[ProductOrderController::class,'cancelOrder']);
     Route::get('/get-order-for-designer',[ProductOrderController::class,'getOrderForDesginer']);
-
+    Route::get('/get-active-order',[ProductOrderController::class,'getActiveOrder']);
 
     # Offer Promotion Routes
     Route::get('/get_offer_promotion',[OfferPromotionController::class,'index']);
@@ -171,6 +171,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     # Delete Account 
     Route::get('/delete-account',[UserController::class,'deleteAccount']);
+
+
+
 });
 
 Route::get('/callback/{invoiceId}', [PaymentGatewayController::class, 'callBack']);

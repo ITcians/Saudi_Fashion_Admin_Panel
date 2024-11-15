@@ -428,5 +428,22 @@ class ProductOrderController extends Controller
         return response()->json($order);
     }
 
+    public function getActiveOrder()
+    {
+        $order = OrderModel::where('desginer_id', Auth::id())->where('status' , '!=', 200)
+        ->with([
+            'customer', // Relationship with Customer model (may be a belongsTo or hasOne)
+            'desginer', // Relationship with Designer model (belongsTo or hasOne)
+            'orderDetails.product.media', // Relationship with Product through OrderDetail (hasMany or belongsTo)
+            'orderDetails.address', // Relationship with Address through OrderDetail (belongsTo)
+            'orderDetails.color', // Relationship with Color through OrderDetail (belongsTo)
+            'orderDetails.size' // Relationship with Size through OrderDetail (belongsTo)
+        ])
+        ->latest()
+        ->paginate(10);
+
+        return response()->json($order);
+    }
+
 }
 
