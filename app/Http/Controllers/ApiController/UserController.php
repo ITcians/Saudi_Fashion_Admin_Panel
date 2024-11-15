@@ -129,7 +129,7 @@ class UserController extends Controller
                 'image' =>  $imageName 
             ]);
 
-            return response()->json(['message' => 'Profile image updated successfully']);
+            return response()->json(['message' => 'Profile image updated successfully','image' => $imageName]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
