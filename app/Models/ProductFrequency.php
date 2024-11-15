@@ -14,5 +14,6 @@ class ProductFrequency extends Model
     protected $fillable = [
         'product_id',
         'user_id',
+        'created_by_id',
     ];
 }

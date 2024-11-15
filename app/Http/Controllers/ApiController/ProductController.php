@@ -513,11 +513,13 @@ public function updateProductPriceAndCategory(Request $request, string $id)
         try {
             $this->validate($request,[
                 'product_id' => 'required',
+                'created_by_id' => 'required'
             ]);
 
             ProductFrequency::create([
                 'product_id' =>$request->product_id,
                 'user_id' => Auth::id(),
+                'created_by_id' =>$request->created_by_id,
             ]);
 
             $this->res->message = 'Data Added Successfully!';
