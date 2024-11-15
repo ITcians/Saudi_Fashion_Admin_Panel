@@ -530,6 +530,12 @@ public function updateProductPriceAndCategory(Request $request, string $id)
         }
     }
 
+    public function getProductFrequency()
+    {
+        $fre = ProductFrequency::where('created_by_id',Auth::id())->get();
+        return response()->json($fre);
+    }
+
 
 }
 
