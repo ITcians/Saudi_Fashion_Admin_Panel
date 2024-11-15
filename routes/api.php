@@ -137,6 +137,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cancel-order/{id}',[ProductOrderController::class,'cancelOrder']);
     Route::get('/get-order-for-designer',[ProductOrderController::class,'getOrderForDesginer']);
     Route::get('/get-active-order',[ProductOrderController::class,'getActiveOrder']);
+    Route::post('/product-tap-frequency',[ProductController::class,'productTapFrequency']);
 
     # Offer Promotion Routes
     Route::get('/get_offer_promotion',[OfferPromotionController::class,'index']);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ColorModel;
 use App\Models\Comment;
 use App\Models\Info;
+use App\Models\ProductFrequency;
 use App\Models\ProductMediaModel;
 use App\Models\ProductModel;
 use App\Models\ProductSizeModel;
@@ -507,6 +508,25 @@ public function updateProductPriceAndCategory(Request $request, string $id)
     }
 
 
+    public function productTapFrequency(Request $request)
+    {
+        try {
+            $this->validate($request,[
+                'product_id' => 'required',
+            ]);
+
+            ProductFrequency::create([
+                'product_id' =>$request->product_id,
+                'user_id' => Auth::id(),
+            ]);
+
+            $this->res->message = 'Data Added Successfully!';
+        } catch (Exception $ex) {
+            $this->res->error = $ex->getMessage();
+        } finally {
+            return $this->res;
+        }
+    }
 
 
 }
