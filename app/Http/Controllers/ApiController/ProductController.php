@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ColorModel;
 use App\Models\Comment;
 use App\Models\Info;
+use App\Models\OrderModel;
 use App\Models\ProductFrequency;
 use App\Models\ProductMediaModel;
 use App\Models\ProductModel;
@@ -536,6 +537,11 @@ public function updateProductPriceAndCategory(Request $request, string $id)
         return response()->json(['view_count'=>$fre]);
     }
 
+    public function statusForDesginer($invoiceId) 
+    {
+        $order = OrderModel::where('desginer_id',Auth::id())->where('invoice_id',$invoiceId)->first();
+        return response()->json(['status' => $order->status]);
+    }
 
 }
 
